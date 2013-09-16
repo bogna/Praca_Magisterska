@@ -1,0 +1,342 @@
+% *** Uwaga *** Tekst w tym pliku nie ma specjalnie sensu i służy za twz. wypełniacz ***
+\documentclass[skorowidz,autorrok,backref,xodstep]{wmimgr}
+
+\usepackage{listings}
+\usepackage{color}
+\usepackage{alltt}
+\usepackage{floatrow}
+\usepackage{hyphenat}
+\usepackage{url}
+\usepackage{mathtools}
+\usepackage{algorithmic}
+\usepackage[chapter]{algorithm}
+\usepackage{graphicx}
+\usepackage{amsthm}
+
+\newcommand\dbr{\discretionary{}{}{}}
+\DeclareTextFontCommand{\emph}{\bfseries} %zamienia emph z pochyłego na bold
+
+% Opcjonalnie identyfikator dokumentu (drukowany tylko z włączoną opcją `brudnopis'):
+\nrwersji {0.1}
+
+% Dane autora(ów):
+\author   {Bogumiła Socha}
+\nralbumu {s329558}
+\email    {bogumila.socha@gmail.com}
+
+
+% Tytuł pracy:
+\title    {Modelowanie geometryczne za pomocą powierzchni typu subdivision}
+
+% Kierunek, tj. katedra/instytut promotora:
+\kierunek {Informatyka}
+
+% Rok obrony:
+\date     {2013}
+
+% Jeżeli nie podano miejsca zostanie wpisany `Sopot'
+\miejsce {Poznań}
+
+% Tytuł naukowy, imię i nazwisko promotora:
+\opiekun  {dr Wojciech Kowalewski}
+
+%
+% Miejsce na deklaracje własnych poleceń:
+\newcommand{\filename}[1]{\texttt{#1}}
+\newtheorem{theorem}{Twierdzenie}
+
+% Cytowanie przez numer (standard):
+%\bibliographystyle{plain}
+%
+% Jeżeli cytowanie autor-rok to np.:
+\bibliographystyle{papalike}
+%
+% Inne sposoby
+%\bibliographystyle{abbrv} %% standard
+%\bibliographystyle{acm} %% ACM transactions...
+%\bibliographystyle{elsart-harv} %% dziwaczny %%
+
+%%% zakomentuj \iffalse ... \fi (ostatnie, zaznaczone //pdfscreen) jeżeli chcesz włączyć pakiet pdfscreen:
+\def\SITI{SI/TI} %%%
+\def\ISTI{SI/TI} %%%
+\def\UTAUT{UTAUT} %%%
+
+\begin{document}
+
+%%
+\nocite{beebe,p.perl} %% dołącza niecytowane
+%%\nocite{*} %% ** dołącza wszystko **
+
+
+% Tytuł/spis treści
+\maketitle
+%
+% Wstęp
+\introduction
+
+Aczkolwiek w~ciągu ostatnich lat skład tekstu wspomagany
+komputerowo całkowicie wyeliminował stosowanie tradycyjnych technik
+drukarskich, to podobny, proces w~przypadku publikacji elektronicznych
+czyli publikacji, które w~ogóle nie wykorzystują papieru, a~nośnikem
+informacji staje się ekran komputera nie jest obserwowany.
+
+Formatowanie wizualne, powstało z~myślą o~przygotowaniu publikacji do
+druku i~dlatego nie może sprostać nowym potrzebom, które stwarza
+postęp techniki. Coraz większą rolę odgrywają dziś elektroniczne
+repozytoria, bazy danych, publikacje na CD-Romach oraz WWW.  Wypływa
+też stąd ważny wniosek, że tworzenie dokumentów według paradygmatu
+WYSIWYG nie jest efektywne i~stopniowo należy oczekiwać powstawania,
+wdrażania i~rozpowszechniania się systemów opartych na paradygmacie
+\emph{formatowania strukturalnego}.
+
+W~dokumencie formatowanym strukturalnie oznaczana jest struktura
+dokumentu a~nie określany jego wygląd.
+
+% Na końcu tytułów, śródtytułów, tytułów rysunków i tabel
+% _nie_ umieszcza się kropki
+\chapter{Subdivision 1D}
+Na początku skupimy się na przypadku subdivision 1D, aby przedstawić wszystkie podstawowe pojęcia i~idee. Następnie przejdziemy do subdivision 2D. Zaczniemy od przykładu subdivision interpolującego, aby przejść do splajnów.
+\begin{figure}[h!] 
+\begin{center} 
+\includegraphics[width=5in]{Clipboard01} 
+\caption{\small \sl Przykład subdivision dla krzywych na płaszczyźnie. Od lewej: cztery punkty połączone fragmentami prostych. Następnie, po pierwszej iteracji algorytmu (po pierwszym dopasowaniu): "pomiędzy" starymi punktami zostały wstawione 3 nowe a~następnie wszystkie punkty zostały połączone odcinkami prostych. Po dwóch kolejnych iteracjach - maksymalnie po prawej - krzywa zaczyna stawać się gładka.}
+\label{fig:SimpleSubdivision} 
+\end{center} 
+\end{figure}
+
+\section{Idea subdivision}
+Podstawową ideę subdivision można przedstawić w następujący sposób:
+\begin{quote}
+Subdivision definiuje gładką krzywą albo powierzchnię jako granicę sekwencji kolejnych dopasowań (iteracji algorytmu).
+\end{quote}
+Jest to bardzo luźna definicja, ale pokazująca istotę subdivision.
+
+Rysunek  ~\ref{fig:SimpleSubdivision} to przykład zastosowania kolejnych iteracji algorytmu subdivision dla krzywej na płaszczyźnie. Patrząc od lewej zaczynamy od 4 punktow połączonych odcinkami prostych. Następnie po prawej widzimy krzywa po jednej iteracji algorytmu. "Pomiędzy" starymi punktami zostały dodane 3 nowe punkty i wszystkie zostały połączone odcinkami. Za każdym powtórzeniem procesu otrzymujemy krzywą, która wygląda na coraz bardziej gładką. Łatwo zauważyć, że po zaledwie kilku kolejnych iteracjach, krzywa przedstawiona przy użyciu urządzeń o skończonej rozdzielczości jak ekran komputera czy drukarka, będzie wyglądać na gładką.
+
+\begin{figure}[h!] 
+\begin{center} 
+\includegraphics[width=5in]{Clipboard02} 
+\caption{\small \sl Przykład subdivision dla powierzchni (subdivision 2D). Od lewej: wyjściowa siatka trójkątów przybliżająca powierzchnię docelową, na środku: siatka po jednej iteracji algorytmu - każdy z trójkątów został podzielony, zgodnie z pewną regułą subdivision, na 4 trójkąty. Po prawej - siatka po kolejnym kroku algorytmu.}
+\label{fig:SurfaceSubdivision} 
+\end{center} 
+\end{figure}
+
+Rysunek  ~\ref{fig:SurfaceSubdivision} pokazuje przykład zastosowania subdivision dla powierzchni. W wyjściowej siatce trójkątów każdy trójkąt jest dzielony na cztery nowe. Ilość trójkątów w siatce rośnie w każdą iteracją tego algorytmu czterokrotnie. Dwukrotne zastosowanie algorytmu przedstawia figura po prawej stronie.
+
+Oba powyższe przykłady pokazują subdivision interpolujące. W takim przypadku algorytmu oryginalne punkty pozostają niezmienione a jednocześnie dodawane są nowe punkty. Jednak istnieje także nieinterpolujące subdivision - wtedy oprócz dodawania nowych punktów w każdym kroku algorytmu, przemieszczane są także stare punkty.
+
+W jaki sposób wstawiane są nowe punkty? Istnieje wiele możliwości, jednak zawsze kształt i gładkość (stopień ciągłości) krzywej lub powierzchni wynikowej zależy od przyjętej reguły. Reguła taka powinna spełniać poniższe własności:
+\begin{itemize}
+\item \emph{wydajność} - położenie punktów powinno mieć niewielką złożoność obliczeniową;
+\item \emph{zwartość nośnika} - konkretny punkt powinien mieć wpływ na niewielki~i skończony fragment krzywej lub powierzchni;
+\item \emph{lokalność definicji} - reguły definiujące położenie nowych punktów nie powinny zależeć od oddalonych punktów;
+\item \emph{niezmienność afiniczna} - w przypadku operacji przesunięcia, skalowania lub obrotu początkowego zbioru punktów, krzywa wynikowa powinna podlegać tej samej transformacji;
+\item \emph{prostota} - reguły powinny być nieskomplikowane oraz powinna być ich niewielka ilość;
+\item \emph{ciągłość} - krzywa lub powierzchnia wynikowa powinna być różniczkowalna.
+\end{itemize}
+
+Reguła użyta na Rysunku ~\ref{fig:SimpleSubdivision} oblicza nowe punkty za pomocą średniej ważonej punktów sąsiednich - 2 po lewej i 2 po prawej używając wag: 1/16(-1,9,9,-1). Pomińmy dla jasności punkty graniczne. Reguła ta jest wydajna, ponieważ wykorzystuje jedynie 4 operacje mnożenia i 3 dodawania dla każdej współrzędnej, ma zwarty nośnik, ponieważ położenie punktu zależy jedynie od jego 4 sąsiadów, ma lokalną definicję, ponieważ wagi punktów są ustalone, jest niezmienna afinicznie, ponieważ wagi sumują się do 1, jest prosta, ponieważ użyta jest tylko jedna reguła (dla punktów granicznych użyta została 
+jedynie jedna dodatkowa reguła), krzywa wynikowa ma ciągłość $C^1$.
+
+Porównajmy teraz subdivision z inną metodą modelowania gładkich krzywych - tradycyjnymi splajnami:
+\begin{itemize}
+\item \emph{wydajność} - koszt obliczeniowy to bardzo istotny aspekt modelowania. Implementacja subdivision jest raczej prosta i ma niski koszt obliczeniowy. Do obliczenia położenia danego punktu używa się informacji o niewielu sąsiednich punktach, podobnie jak przy wstawianiu węzłów w przypadku splajnów. Często subdivision są uogólnieniem dla metod używanych w przypadku splajnów.
+\item \emph{dowolna topologia} - modelowanie przy użyciu splajnów dla dowolnej topologii jest bardzo trudne. Przez dowolną topologię rozumiemy dwie własności: dowolny genus siatki i końcowej powierzchni oraz dowolność struktury grafu utworzonego przez wierzchołki oraz krawędzie siatki wyjściowej, w szczególności stopień każdego z wierzchołków może być dowolny. Rysunek  ~\ref{fig:ExtraordinaryVertices} pokazuje siatkę  z wierzchołkami szczególnymi - o innym stopniu niż 4.
+
+Obie te własności są powiązane. Jeśli zachowamy stały stopień wierzchołków tj. 4 (dla wyjściowej siatki kwadratów) lub 6 (dla siatki trójkątów), zgodnie z charakterystyką Eulera grafu planarnego możemy zbudować takie siatki tylko wtedy, gdy ich topologia jest topologią nieskończonej płaszczyzny, cylindra lub torusa. Żaden inny kształt np. kula nie może zostać zbudowany w ten sposób. 
+Reprezentacja wierzchołków o innym stopniu za pomocą splajnów znacząco zwiększa złożoność.
+Subdivision użyta do dowolnej topologii nie zwiększa złożoności obliczeniowej i jest to jedna z jej kluczowych własności. Subdivision powstały podczas poszukiwań rozwiązania problemu modelowania dowolnej topologii za pomocą splajnów.
+
+\begin{figure}[h!] 
+\begin{center} 
+\includegraphics[width=5in]{Clipboard03} 
+\caption{\small \sl Siatka z dwoma szczególnymi wierzchołkami, jeden stopnia 3 i jeden stopnia 6. Standardowo dla siatki kwadratów stopień wierzchołka wynosi 4. W takich przypadkach subdivision zachowuje się naturalnie i nie zwiększa to złożoności obliczeniowej algorytmu.}
+\label{fig:ExtraordinaryVertices} 
+\end{center} 
+\end{figure}
+
+\item \emph{własności powierzchni} - często pożądaną własnością jest możliwość kontroli kształtu i rozmiaru szczególnych fragmentów modelu, takich jak: fałdy, żłobienia czy ostre krawędzie. Splajny umożliwiają bardzo precyzyjną kontrolę, jednak wiąże się to z wysokim kosztem obliczeniowym oraz niewygodne w modelowaniu, w szczególności dla dowolnie wybranej lokalizacji. Subdivision umożliwia znacząco bardziej elastyczną kontrolę. Oprócz możliwości wyboru lokalizacji punktów, subdivision dostępnia także modyfikację współczynników subdivision dającą np. efekt ostrych krawędzi lub kontroli granic.
+\item \emph{złożoność geometrii} - dla zastosowań wymagających interakcji wydajność jest kluczową cechą. Ponieważ subdivision bazuje na powtarzaniu kolejnych iteracji algorytmu, bardzo łatwe jest za jej pomocą modelowanie na różnych poziomach szczegółowości albo kompresja na potrzeby internetu.
+\end{itemize}
+Ponieważ większość technik subdivision bazuje na splajnach, zaczniemy od krótkiego przeglądu własności splajnów, aby przedstawić związek między nimi i subdivision.
+
+\section{Przegląd splajnów}
+\subsection{Krzywe odcinkowo wielomianowe}
+Splajny (krzywe sklejane) to krzywe składające się z odcinków opisanych wielomianami określonego stopnia. 
+Krzywe sklejane trzeciego stopnia mogą być zapisane jako:
+\begin{equation} 
+x(t)=a^i_3t^3+a^i_2t^2+a^i_1t+a^i_0
+\end{equation}
+\begin{equation} 
+y(t)=b^i_3t^3+b^i_2t^2+b^i_1t+b^i_0
+\end{equation}
+gdzie $(a,b)$ to stałe współczynniki kontrolujące kształt krzywej na obszarze określonego segmentu. Jednomiany $(t^3,t^2,t^1,t^0)$ są ograniczonymi do określonego segmentu funkcjami bazowymi.
+\begin{figure}[h!] 
+\begin{center} 
+\includegraphics[width=3in]{Clipboard04} 
+\caption{\small \sl B-splajn trzeciego stopnia. Funkcja ma wartość zero dla parametrów spoza przedziału $[-2,2]$}
+\label{fig:CubicBSpline}
+\end{center} 
+\end{figure}
+Zazwyczaj chcemy zachować odpowiednią ciągłość funkcji sklejanej na całej jej długości. Dla funkcji stopnia trzeciego zazwyczaj jest to ciągłość $C^2$. Manipulowanie krzywą z użyciem współczynników $(a,b)$ jest bardzo trudne, dlatego wygodnie jest zapisać krzywą jako kombinację liniową przesuniętych B-splajnów, każdy ze współczynnikiem zwanym \emph{punktem kontrolnym}:
+\begin{equation}
+x(t)= \sum x_iB(t-i)
+\end{equation}
+\begin{equation}
+y(t)= \sum y_iB(t-i)
+\end{equation}
+Nowa funkcja bazowa $B(t)$ jest wybrana w sposób gwarantujący ciągłość krzywych wynikowych oraz lokalny wpływ punktów kontrolnych. Wielomiany to funkcje o ciągłości nieskończonego stopnia, zatem, aby splajn miał określoną ciągłość, należy jedynie sprawdzić, czy w punktach, gdzie jego fragmenty się łączą, pochodne są zgodne. 
+
+B-splajn jest naturalnie ciągły, również przy dowolnym przesuwaniu punktów kontrolnych. Ponadto przesuwanie punktu kontrolnego ma największy wpływ na część krzywej położoną bezpośrednio w jego pobliżu i nie ma żadnego wpływu na tę funkcję poza określonym obszarem. Jest to pożądana przy modelowaniu własność.
+
+Poniżej zajmiemy się reprezentacją grafu współrzędnych funkcji.
+ 
+\subsection{Definicja B-splajnów}
+B-splajny mogą być wyprowadzone na wiele sposobów. W tym rozdziale przedstawimy wyprowadzenie za pomocą powtórzeń splotu, ponieważ umożliwi to pokazanie, jak splajny mogą zostać wyprowadzone przy pomocy subdivision.
+
+Weźmy funkcję o odcinkowo stałych współrzędnych, możemy ją zapisać jako:
+\begin{equation}
+x(t)= \sum x_lB^i_0(t)
+\end{equation}
+gdzie $B_0(t)$ to funkcja bazowa zdefiniowana jako:
+\begin{eqnarray*}
+ B_0(t)&=& 1 \text{, jeśli $0 \leq t<1$} \\
+ B_0(t)&=& 0 \text{, w przeciwnym przypadku}
+\end{eqnarray*}
+a funkcje $B_0^i(t)=B_0(t-i)$ są przesunięciami funkcji $B_0(t)$. Zdefiniujmy ciagły splot dwóch funkcji $f(t)$ i $g(t)$jako:
+\begin{equation} 
+(f \ast g)(t)= \int f(s)g(t-s)ds
+\end{equation}
+Graficznie (zob. Rysunek ~\ref{fig:Convolution}) ten splot może być wyprowadzony jako przesuwanie funkcji bazowej wzdłuż osi od minus do plus nieskonczoności, podczas gdy druga z funkcji nie zmienia położenia. Wartość splotu odpowiada polu pod wykresem, czyli długości przedziału, gdzie obie funkcje bazowe mają wartości większe od zera. Na początku wartość splotu wynosi 0, ale wraz z przesuwaniem funkcji, ich część wspólna rośnie i wartość splotu rośnie, aż do momentu gdy $t=1$, potem część wspólna funkcji maleje i także wartość splotu spada, osiągając 0 dla $t=2$.
+\begin{figure}[h!] 
+\begin{center} 
+\includegraphics[width=3in]{Clipboard05} 
+\caption{\small \sl Definicja B-splajnu $B_1(t)$ (po prawej) za pomocą splotu funkcji $B_0(t)$ z sobą samą (po lewej).}
+\label{fig:Convolution}
+\end{center} 
+\end{figure}
+Możemy obliczyć B-splajn stopnia 2 wykonując operację splotu funkcji $B_1(t)$ z $B_0(t)$:
+\begin{equation}
+B_2(t)=\int B_1(s)B_0(t-s)ds
+\end{equation}
+W tym przypadku krzywa wynikowa składa się z trzech segmentów na przedziałach $(0,1)$,$(1,2)$ i $(2,3)$. Wykonując operację splotu $l$ razy, możemy otrzymać B-splajn stopnia $l$:
+\begin{equation}
+B_l(t)=\int B_l-1(s)B_0(t-s)ds
+\end{equation}
+Ta definicja umożliwia zauważenie istotnych własności. 
+\begin{theorem}
+Jeśli $f(t)$ jest $C^k$ ciągła, to $(B_0\ast f)(t)$ jest $C^k+1$ ciągła.
+\end{theorem}
+Jest to bezpośrednia konsekwencja splotu z funkcja bazową. Stąd wynika, że B-splajn stopnia $n$ ma ciągłość $C^n-1$, ponieważ B-splajn stopnia 1 ma ciągłość $C^0$.
+
+\subsection{Uszczegóławialność B-splajnów}
+B-splajny spełniają równanie uszczegóławiania, charakteryzujące subdivision. Dla B-splajnów stopnia $l$:
+\begin{equation}
+B_l(t)= \frac{1}{2^l}\sum_{k=0}^{l+1} {l+1 \choose k}B_l(2t-k)
+\label{eq:bspline} 
+\end{equation}
+Interpretując to równanie możemy powiedzieć, że B-splajn stopnia $l$ może zostać zapisany jako kombinacja liniowa przesuniętych  $k$ i zwielokrotnionych $2t$ kopii samego siebie. Przykładem powyższego równania jest funkcja z Rysunku ~\ref{fig:Convolution}, która może być zapisana jako kombinacja liniowa przesuniętych funkcji z wagami $(1/2,1,1/2)$. Własność uszczegółowiania jest kluczowa dla subdivision. B-splajn stopnia $0$ może zostać zapisany jako:
+\begin{equation}
+B_0(t)= B_0(2t)+B_0(2t-1)
+\end{equation}
+Co łatwo pokazać. Zatem B-splajn stopnia $l$ można zapisać jako:
+\begin{equation}
+B_l(t)= \ast_{i=0}^l B_0(t)=\ast_{i=0}^l (B_0(2t)+B_0(2t-1))
+\end{equation}
+Korzystając z własności splotu możemy zapisać ogólne równanie dla B-splajnów stopnia $l$:
+\begin{equation}
+(x+y)^l+1= \sum_{k=0}^{l+1}{l+1 \choose k} x^{l+k-1}y^k
+\end{equation}
+wstawiając $B_0(2t)$ zamiast $x$ i $B_0(2t-1)$ zamiast $y$. 
+
+\subsection{Uszczegóławialność splajnów}
+Niech:
+\begin{equation}
+\gamma(t)= \begin{bmatrix}
+x(t)\\ y(t)
+\end{bmatrix} = \sum_i p_iB_l^i(t)
+\end{equation}
+będzie splajnem stopnia $l$ z punktami kontrolnymi $(x_i,y_i)^T=p_i \in R^2$. Pomińmy indeks $i$, ponieważ na razie pomijamy granice, podobnie pomińmy indeks $l$, ponieważ zakładamy ustalony stopień dla wszystkich przykładów. Zgodnie z definicją $B^i(t)=B(t-i)$ każdy punkt kontrolny wywiera wpływ jedynie na niewielki fragment krzywej, dla wartości parametru $t \in [i,i+l]$.
+
+Rozważmy teraz $p$, wektor punktów kontrolnych danej krzywej:
+\begin{equation}
+p= \begin{bmatrix}
+\vdots \\
+p-2\\ p-1\\ p_0\\ p_1\\ p_2\\ \vdots \end{bmatrix}
+\end{equation}
+i wektor $B[t]$, którego elementy to przesunięcia funkcji $B$ jak zdefiniowano poniżej:
+\begin{equation}
+B(t)= \begin{bmatrix}
+\cdots & B(t+2) & B(t+1) & B(t) & B(t-1) & B(t-2) & \cdots  
+ \end{bmatrix}
+\end{equation}
+Teraz możemy zapisać krzywą jako $B(t)p$.
+Używając równania uszczegóławiania, możemy zapisać każdy z elementów $B$ podwajając go jako:
+\begin{equation}
+B(2t)= \begin{bmatrix}
+\cdots & B(2t+2) & B(2t+1) & B(2t) & B(2t-1) & B(2t-2) & \cdots  
+ \end{bmatrix}
+\end{equation}
+i użyć macierzy $S$, do równań uszczegóławiania:
+\begin{equation}
+B(t)= B(t+2)S
+\end{equation}
+Macierz $S$, zgodnie z Równaniem ~\ref{eq:bspline} można zapisać jako:
+\begin{equation}
+S_{2i+k,i}= s_k=\frac{1}{2^l} {l+1 \choose k}
+\end{equation}
+Wartości różne od zera to wagi z równania uszczegóławiania. Kolejne kolumny są kopiami samych siebie z przesunięciem o 2 wiersze.
+Zatem możemy zapisać $\gamma(t)$ jako: 
+\begin{equation}
+\gamma(t) = B(t)p = B(2t)Sp
+\end{equation}
+B-splajny w tej krzywej mają 2 razy mniejszy wpływ oraz są umieszczone 2 razy bardziej gęsto. Wykonaliśmy zmianę bazy z $B(t)$ na $B(2t)$ oraz zmieniliśmy punkty kontrolne $p$ na $Sp$. Proces ten można powtarzać:
+\begin{eqnarray*}
+ \gamma(t)&=& B(t)p_0 \\
+          &=& B(2t)p_1    = B(2t)Sp_0 \\
+          &\vdots & \\
+          &=& B(2^j t)p^j = B(2^j t)S^j p_0
+\end{eqnarray*}
+Stąd możemy zdefiniować związek pomiędzy subdivision i punktami kontrolnymi:
+\begin{equation}
+p^{j+1}=Sp^j
+\end{equation}
+gdzie $S$ to nieskończona macierz subdivision.
+
+
+SG~\cite{Goldfarb} jest to Do podstawowych zalet takiego podejścia należy:
+\lstset{emph={square},emphstyle=\color{red}}
+\begin{lstlisting}
+square
+\end{lstlisting}
+%
+% Załączniki (opcjonalnie):
+\appendix
+\chapter{Tytuł załącznika jeden}
+
+Treść załącznika jeden. Treść załącznika jeden. Treść załącznika jeden
+Treść załącznika jeden. Treść załącznika jeden.
+Treść załącznika
+jeden\index{żółw}\index{źdźbło}\index{zebra}.
+
+\chapter{Tytuł załącznika dwa}
+
+Treść załącznika dwa. Treść załącznika dwa. Treść załącznika dwa
+Treść załącznika dwa. Treść załącznika dwa.
+Treść załącznika dwa\index{system XML}.
+
+%\include bib.tex
+\bibliography{sample}
+
+%
+% Spis tabel (jeżeli jest potrzebny):
+\listoftables
+%
+% Spis rysunków (jeżeli jest potrzebny):
+\listoffigures
+
+%
+% Skorowidz (opcjonalnie)
+\printindex
+
+\end{document}
