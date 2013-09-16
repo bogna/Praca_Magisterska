@@ -1,4 +1,3 @@
-% *** Uwaga *** Tekst w tym pliku nie ma specjalnie sensu i służy za twz. wypełniacz ***
 \documentclass[skorowidz,autorrok,backref,xodstep]{wmimgr}
 
 \usepackage{listings}
@@ -74,23 +73,6 @@
 % Wstęp
 \introduction
 
-Aczkolwiek w~ciągu ostatnich lat skład tekstu wspomagany
-komputerowo całkowicie wyeliminował stosowanie tradycyjnych technik
-drukarskich, to podobny, proces w~przypadku publikacji elektronicznych
-czyli publikacji, które w~ogóle nie wykorzystują papieru, a~nośnikem
-informacji staje się ekran komputera nie jest obserwowany.
-
-Formatowanie wizualne, powstało z~myślą o~przygotowaniu publikacji do
-druku i~dlatego nie może sprostać nowym potrzebom, które stwarza
-postęp techniki. Coraz większą rolę odgrywają dziś elektroniczne
-repozytoria, bazy danych, publikacje na CD-Romach oraz WWW.  Wypływa
-też stąd ważny wniosek, że tworzenie dokumentów według paradygmatu
-WYSIWYG nie jest efektywne i~stopniowo należy oczekiwać powstawania,
-wdrażania i~rozpowszechniania się systemów opartych na paradygmacie
-\emph{formatowania strukturalnego}.
-
-W~dokumencie formatowanym strukturalnie oznaczana jest struktura
-dokumentu a~nie określany jego wygląd.
 
 % Na końcu tytułów, śródtytułów, tytułów rysunków i tabel
 % _nie_ umieszcza się kropki
@@ -304,39 +286,30 @@ p^{j+1}=Sp^j
 gdzie $S$ to nieskończona macierz subdivision.
 
 
-SG~\cite{Goldfarb} jest to Do podstawowych zalet takiego podejścia należy:
-\lstset{emph={square},emphstyle=\color{red}}
-\begin{lstlisting}
-square
-\end{lstlisting}
 %
-% Załączniki (opcjonalnie):
+% Załączniki:
 \appendix
 \chapter{Tytuł załącznika jeden}
 
-Treść załącznika jeden. Treść załącznika jeden. Treść załącznika jeden
-Treść załącznika jeden. Treść załącznika jeden.
-Treść załącznika
-jeden\index{żółw}\index{źdźbło}\index{zebra}.
+Treść załącznika jeden.\index{jeden}.
 
 \chapter{Tytuł załącznika dwa}
 
-Treść załącznika dwa. Treść załącznika dwa. Treść załącznika dwa
-Treść załącznika dwa. Treść załącznika dwa.
-Treść załącznika dwa\index{system XML}.
+Treść załącznika dwa. 
+\index{dwa}.
 
 %\include bib.tex
 \bibliography{sample}
 
 %
-% Spis tabel (jeżeli jest potrzebny):
+% Spis tabel:
 \listoftables
 %
-% Spis rysunków (jeżeli jest potrzebny):
+% Spis rysunków:
 \listoffigures
 
 %
-% Skorowidz (opcjonalnie)
+% Skorowidz
 \printindex
 
 \end{document}
