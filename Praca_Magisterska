@@ -15,7 +15,6 @@
 \newcommand\dbr{\discretionary{}{}{}}
 \DeclareTextFontCommand{\emph}{\bfseries} %zamienia emph z pochyłego na bold
 
-% Opcjonalnie identyfikator dokumentu (drukowany tylko z włączoną opcją `brudnopis'):
 \nrwersji {0.1}
 
 % Dane autora(ów):
@@ -33,7 +32,6 @@
 % Rok obrony:
 \date     {2013}
 
-% Jeżeli nie podano miejsca zostanie wpisany `Sopot'
 \miejsce {Poznań}
 
 % Tytuł naukowy, imię i nazwisko promotora:
@@ -45,10 +43,10 @@
 \newtheorem{theorem}{Twierdzenie}
 
 % Cytowanie przez numer (standard):
-%\bibliographystyle{plain}
+\bibliographystyle{plain}
 %
 % Jeżeli cytowanie autor-rok to np.:
-\bibliographystyle{papalike}
+%\bibliographystyle{papalike}
 %
 % Inne sposoby
 %\bibliographystyle{abbrv} %% standard
@@ -74,8 +72,6 @@
 \introduction
 
 
-% Na końcu tytułów, śródtytułów, tytułów rysunków i tabel
-% _nie_ umieszcza się kropki
 \chapter{Subdivision 1D}
 Na początku skupimy się na przypadku subdivision 1D, aby przedstawić wszystkie podstawowe pojęcia i~idee. Następnie przejdziemy do subdivision 2D. Zaczniemy od przykładu subdivision interpolującego, aby przejść do splajnów.
 \begin{figure}[h!] 
@@ -93,7 +89,7 @@ Subdivision definiuje gładką krzywą albo powierzchnię jako granicę sekwencj
 \end{quote}
 Jest to bardzo luźna definicja, ale pokazująca istotę subdivision.
 
-Rysunek  ~\ref{fig:SimpleSubdivision} to przykład zastosowania kolejnych iteracji algorytmu subdivision dla krzywej na płaszczyźnie. Patrząc od lewej zaczynamy od 4 punktow połączonych odcinkami prostych. Następnie po prawej widzimy krzywa po jednej iteracji algorytmu. "Pomiędzy" starymi punktami zostały dodane 3 nowe punkty i wszystkie zostały połączone odcinkami. Za każdym powtórzeniem procesu otrzymujemy krzywą, która wygląda na coraz bardziej gładką. Łatwo zauważyć, że po zaledwie kilku kolejnych iteracjach, krzywa przedstawiona przy użyciu urządzeń o skończonej rozdzielczości jak ekran komputera czy drukarka, będzie wyglądać na gładką.
+Rysunek  ~\ref{fig:SimpleSubdivision} to przykład zastosowania kolejnych iteracji algorytmu subdivision dla krzywej na płaszczyźnie. Patrząc od lewej zaczynamy od 4 punktów połączonych odcinkami prostych. Następnie po prawej widzimy krzywa po jednej iteracji algorytmu. "Pomiędzy" starymi punktami zostały dodane 3 nowe punkty i wszystkie zostały połączone odcinkami. Za każdym powtórzeniem procesu otrzymujemy krzywą, która wygląda na coraz bardziej gładką. Łatwo zauważyć, że po zaledwie kilku kolejnych iteracjach, krzywa przedstawiona przy użyciu urządzeń o skończonej rozdzielczości jak ekran komputera czy drukarka, będzie wyglądać na gładką.
 
 \begin{figure}[h!] 
 \begin{center} 
@@ -137,7 +133,7 @@ Subdivision użyta do dowolnej topologii nie zwiększa złożoności obliczeniow
 \end{center} 
 \end{figure}
 
-\item \emph{własności powierzchni} - często pożądaną własnością jest możliwość kontroli kształtu i rozmiaru szczególnych fragmentów modelu, takich jak: fałdy, żłobienia czy ostre krawędzie. Splajny umożliwiają bardzo precyzyjną kontrolę, jednak wiąże się to z wysokim kosztem obliczeniowym oraz niewygodne w modelowaniu, w szczególności dla dowolnie wybranej lokalizacji. Subdivision umożliwia znacząco bardziej elastyczną kontrolę. Oprócz możliwości wyboru lokalizacji punktów, subdivision dostępnia także modyfikację współczynników subdivision dającą np. efekt ostrych krawędzi lub kontroli granic.
+\item \emph{własności powierzchni} - często pożądaną własnością jest możliwość kontroli kształtu i rozmiaru szczególnych fragmentów modelu, takich jak: fałdy, żłobienia czy ostre krawędzie. Splajny umożliwiają bardzo precyzyjną kontrolę, jednak wiąże się to z wysokim kosztem obliczeniowym oraz niewygodne w modelowaniu, w szczególności dla dowolnie wybranej lokalizacji. Subdivision umożliwia znacząco bardziej elastyczną kontrolę. Oprócz możliwości wyboru lokalizacji punktów, subdivision udostępnia także modyfikację współczynników subdivision dającą np. efekt ostrych krawędzi lub kontroli granic.
 \item \emph{złożoność geometrii} - dla zastosowań wymagających interakcji wydajność jest kluczową cechą. Ponieważ subdivision bazuje na powtarzaniu kolejnych iteracji algorytmu, bardzo łatwe jest za jej pomocą modelowanie na różnych poziomach szczegółowości albo kompresja na potrzeby internetu.
 \end{itemize}
 Ponieważ większość technik subdivision bazuje na splajnach, zaczniemy od krótkiego przeglądu własności splajnów, aby przedstawić związek między nimi i subdivision.
@@ -185,11 +181,11 @@ gdzie $B_0(t)$ to funkcja bazowa zdefiniowana jako:
  B_0(t)&=& 1 \text{, jeśli $0 \leq t<1$} \\
  B_0(t)&=& 0 \text{, w przeciwnym przypadku}
 \end{eqnarray*}
-a funkcje $B_0^i(t)=B_0(t-i)$ są przesunięciami funkcji $B_0(t)$. Zdefiniujmy ciagły splot dwóch funkcji $f(t)$ i $g(t)$jako:
+a funkcje $B_0^i(t)=B_0(t-i)$ są przesunięciami funkcji $B_0(t)$. Zdefiniujmy ciągły splot dwóch funkcji $f(t)$ i $g(t)$jako:
 \begin{equation} 
 (f \ast g)(t)= \int f(s)g(t-s)ds
 \end{equation}
-Graficznie (zob. Rysunek ~\ref{fig:Convolution}) ten splot może być wyprowadzony jako przesuwanie funkcji bazowej wzdłuż osi od minus do plus nieskonczoności, podczas gdy druga z funkcji nie zmienia położenia. Wartość splotu odpowiada polu pod wykresem, czyli długości przedziału, gdzie obie funkcje bazowe mają wartości większe od zera. Na początku wartość splotu wynosi 0, ale wraz z przesuwaniem funkcji, ich część wspólna rośnie i wartość splotu rośnie, aż do momentu gdy $t=1$, potem część wspólna funkcji maleje i także wartość splotu spada, osiągając 0 dla $t=2$.
+Graficznie (zob. Rysunek ~\ref{fig:Convolution}) ten splot może być wyprowadzony jako przesuwanie funkcji bazowej wzdłuż osi od minus do plus nieskończoności, podczas gdy druga z funkcji nie zmienia położenia. Wartość splotu odpowiada polu pod wykresem, czyli długości przedziału, gdzie obie funkcje bazowe mają wartości większe od zera. Na początku wartość splotu wynosi 0, ale wraz z przesuwaniem funkcji, ich część wspólna rośnie i wartość splotu rośnie, aż do momentu gdy $t=1$, potem część wspólna funkcji maleje i także wartość splotu spada, osiągając 0 dla $t=2$.
 \begin{figure}[h!] 
 \begin{center} 
 \includegraphics[width=3in]{Clipboard05} 
@@ -217,7 +213,7 @@ B-splajny spełniają równanie uszczegóławiania, charakteryzujące subdivisio
 B_l(t)= \frac{1}{2^l}\sum_{k=0}^{l+1} {l+1 \choose k}B_l(2t-k)
 \label{eq:bspline} 
 \end{equation}
-Interpretując to równanie możemy powiedzieć, że B-splajn stopnia $l$ może zostać zapisany jako kombinacja liniowa przesuniętych  $k$ i zwielokrotnionych $2t$ kopii samego siebie. Przykładem powyższego równania jest funkcja z Rysunku ~\ref{fig:Convolution}, która może być zapisana jako kombinacja liniowa przesuniętych funkcji z wagami $(1/2,1,1/2)$. Własność uszczegółowiania jest kluczowa dla subdivision. B-splajn stopnia $0$ może zostać zapisany jako:
+Interpretując to równanie możemy powiedzieć, że B-splajn stopnia $l$ może zostać zapisany jako kombinacja liniowa przesuniętych  $k$ i zwielokrotnionych $2t$ kopii samego siebie. Przykładem powyższego równania jest funkcja z Rysunku ~\ref{fig:Convolution}, która może być zapisana jako kombinacja liniowa przesuniętych funkcji z wagami $(1/2,1,1/2)$. Własność uszczegóławiania jest kluczowa dla subdivision. B-splajn stopnia $0$ może zostać zapisany jako:
 \begin{equation}
 B_0(t)= B_0(2t)+B_0(2t-1)
 \end{equation}
@@ -285,31 +281,191 @@ p^{j+1}=Sp^j
 \end{equation}
 gdzie $S$ to nieskończona macierz subdivision.
 
+Każdy element $p_i^{j+1}$ możemy zapisać jako:
+\begin{equation}
+p_i^{j+1}=\sum _l S_{i,l}p_l^j
+\end{equation}
+Rozważmy osobno dla punktów parzystych i nieparzystych, aby pokazać dokładniej, jak tworzone są nowe punkty.
+
+Dla nieparzystych mamy:
+\begin{equation}
+p_{2i+1}^{j+1}=\sum _l S_{2i+1,l}p_l^j=\sum _l s_{2(i-l)+1}p_l^j
+\end{equation}
+dla parzystych zaś:
+\begin{equation}
+p_{2i}^{j+1}=\sum _l S_{2i,l}p_l^j=\sum _l s_{2(i-l)}p_l^j
+\end{equation}
+Uzyskaliśmy zatem 2 reguły subdivision - jedną dla nowych parzystych punktów krzywej i drugą dla nieparzystych. Rozważmy teraz 2 przykłady. Dla subdivision funkcji przedziałami liniowych funkcje bazowe to funkcje trójkątne, współczynniki nieparzyste to $1/2$ i $1/2$, zaś parzyste $1$. Dla funkcji typu splajn współczynniki nieparzyste to $1/2$ i $1/2$, a parzyste: $1/8$, $6/8$ i $1/8$.
+
+Punkty nieparzyste $j+1$ są nowo wstawiane a parzyste odnoszą się bezpośrednio do starych punktów $j$. Dla funkcji przedziałami liniowych punkty parzyste są to dokładnie stare punkty z poprzedniej iteracji ($j$). Subdivision o takiej własności nazywamy \emph{interpolującą}, ponieważ punkty, które raz zostały wstawione, pozostają na swoich miejscach. W przypadku krzywych typu splajn nieparzyste punkty są średnią arytmetyczną 2 sąsiednich punktów z poprzedniej iteracji, zatem $p_2i^j+1 \neq p_i^j$, takie schematy subdivision nazywamy \emph{aproksymującą}.
+ 
+\subsection{Subdivision splajnów}
+Powtarzając algorytm subdivision na zbiorze wejściowych punktów danego splajna otrzymujemy coraz gęstszy zbiór punktów. Okazuje się, że sekwencja tych punktów zbiega do właśnie tej krzywej z prędkością geometryczną. Wyrażając się nieprecyzyjnie, ciężko jest odróżnić krzywą od zbioru punktów kontrolnych już po kilku krokach algorytmu subdivision. 
+
+Istotą użycia subdivision jest fakt, że na ekranie urządzenia wyświetlającego krzywą nie rysujemy jej samej, a właśnie zbiór punktów kontrolnych połączonych prostymi i na nich stosujemy algorytm subdivision.
+
+
+
+
+\chapter{Powierzchnie subdivision}
+
+\chapter{Przegląd schematów subdivision }
+\section{Próba klasyfikacji}
+W tym rozdziale opiszemy najbardziej znane stacjonarne schematy subdivision, które generują powierzchnie o ciągłości $C^1$ na ustalonej siatce wejściowej. Z racji ograniczenia tej pracy rozważymy jednak tylko część schematów, najbardziej znanych oraz dobrze zbadanych.
+Aby uporządkować klasyfikację przyjmiemy poniższe 4 kryteria:
+\begin{itemize}
+\item rodzaj reguły uszczegóławiania (podział ścian lub podział wierzchołków);
+\item rodzaj generowanej siatki (trójkątów lub kwadratów);
+\item rodzaj schematu subdivision (interpolująca lub aproksymująca);
+\item stopień ciągłości końcowej powierzchni dla regularnej siatki wejściowej ($C^1$, $C^2$ itp.)
+\end{itemize}
+
+\begin{tabular}{|c|c|c|c|} \hline
+\emph{Podział:} & \multicolumn{2}{|c|}{\emph{ścian}} & {\emph{wierzchołków}} \\
+ \hline
+  & \textit{siatka trójkątów} & \textit{siatka kwadratów} & \\ \cline{1-3}
+\textit{sch. aproksymujący} & Loop ($C^2$) & Catmull-Clark ($C^2$) & {Doo-Sabin}\\ \cline{1-3}
+\textit{sch. interpolujący} & zmod. Butterfly ($C^1$) & Kobbelt ($C^1$) & \\ \hline
+%\multicolumn{3}{c}{...} \\ % rozciągnięcie wiersza na 3 kolumny
+\end{tabular}
+
+
+W powyższej klasyfikacji nie uwzględniamy wierzchołków szczególnych, a jedynie reguły subdivision dla regularnych siatek wielokątów.
+Przyjrzyjmy się bardziej szczegółowo kryteriom użytym do powyższej klasyfikacji.
+\begin{itemize}
+\item \emph{Typ wejściowej siatki wielokątów}
+Regularne siatki wielokątów charakteryzują się regularnym rozmieszczeniem wierzchołków. Uzyskać je można w siatce składającej się z identycznych wielokątów. Dodatkowo przyjmujemy, że są to wielokąty regularne. Istnieją jedynie 3 takie siatki: trójkątów równobocznych, kwadratów oraz sześciokątów regularnych. Te ostatnie nie nadają się do zastosowań praktycznych, dlatego powszechnie stosuje się dwa pierwsze rodzaje siatek. Stąd wywodzi się podział metod subdivision.
+\item \emph{Podział ścian i wierzchołków}
+Określimy teraz, w jaki sposób wielokąty w siatce po iteracji algorytmu subdivision odpowiadają wielokątom sprzed tej operacji. Metody subdivision używające podziału ścian nazywamy pierwotnymi a używające podziału wierzchołków - dualnymi.
+W tym pierwszym przypadku każda ściana wejściowej siatki dzielona jest na 4 nowe. Stare wierzchołki pozostają na swoich miejscach, na każdej krawędzi dodawany jest nowy wierzchołek, w przypadku siatki kwadratów dodawany jest również nowy wierzchołek na każdej ścianie.
+W przypadku metod używających podziału wierzchołków dla każdego wierzchołka tworzone jest tyle nowych wierzchołków ile wynosiła liczba przyległych do niego ścian. Dla każdej krawędzi oraz wierzchołka tworzona jest nowa ściana, stare ściany są pozostawiane. Siatki czworokątów dobrze działają z tą metodą.
+
+
+\begin{figure}[h!] 
+\begin{center} 
+\includegraphics[width=5in]{Clipboard3_01} 
+\caption{\small \sl Różne reguły uszczegóławiania. Po lewej na górze: Podział ścian dla siatki kwadratów, po prawej na górze: Podział wierzchołków dla siatki kwadratów, po lewej na dole: Podział ścian dla siatki trójkątów.}
+\label{fig:FaceVertexSplit} 
+\end{center} 
+\end{figure}
+
+\item \emph{Aproksymacja a interpolacja}
+Schematy subdivision opierające się na podziale ścian mogą być aproksymujące lub interpolujące. W schematach interpolujących punkty kontrolne siatki wejściowej są również punktami powierzchni końcowej dzięki czemu modelowanie takiej powierzchni jest bardzo intuicyjne. Schematy interpolujące umożliwiają także uproszczenie algorytmów i wykonywanie obliczeń "w miejscu". Jednakże jakość powierzchni generowanych przez schematy aproksymujące jest wyższa, ponadto schematy aproksymujące generują powierzchnie szybciej zbiegające do powierzchni końcowej.
+\end{itemize}
+\section{Schemat Loop'a}
+Schemat Loop'a to prosty schemat aproksymujący, bazujący na podziale ścian dla trójkątnej siatki wejściowej zaproponowany przez Charles'a Loop'a \cite {Loop} .
+Powierzchnie uzyskane za pomocą tego schematu charakteryzują się ciągłością $C^2$ wszędzie poza szczególnymi wierzchołkami, gdzie występuje ciągłość $C^1$. Hoppe, DeRose, Duchamp i inni \cite {Hoppe} zaproponowali odcinkowe rozszerzenie schematu Loop'a o ciągłości $C^1$.
+\subsection*{Zasady subdivision w schemacie Loop'a}
+Schemat przedstawia Rysunek ~\ref{fig:LoopCrease}. Dla krawędzi oraz załamań oznaczonych jako "Crease and boundary" zastosowano oddzielne zasady, które tworzą krzywą stopnia drugiego wzdłuż krawędzi lub załamań zależną jedynie od punktów należących do nich.
+\begin{figure}[h!] 
+\begin{center} 
+\includegraphics[width=4in]{Clipboard3_02} 
+\caption{\small \sl Schemat subdivision Loop'a. Po lewej stronie wariant dla nieparzystych wierzchołków, po prawej stronie dla parzystych. $\beta$ wg. oryginalnego schematu Loop'a wynosi $\frac{1}{2}(5/8-(\frac{3}{8}+\frac{1}{4}cos\frac{2\pi}{n})^2)$}.
+\label{fig:LoopCrease} 
+\end{center} 
+\end{figure}
+
+W \cite{Hoppe} reguły subdivision dla szczególnych wierzchołków, znajdujących się na załamaniach oraz ich otoczenia zostały zmodyfikowane tak, aby zachować ciągłość (po obu stronach w przypadku załamania oraz po jednej stronie w przypadku krawędzi). Jednak ta modyfikacja nie wpływa znacząco na wygląd powierzchni a jednocześnie krzywa na załamaniu może być zależna od stopni pozostałych wierzchołków - jest to pewien problem, kiedy chcemy połączyć 2 płaszczyzny wzdłuż granicy. Dlatego dla celów wyświetlania lepiej stosować reguły zaprezentowane na Rysunku ~\ref{fig:LoopCrease} (mimo że dla wierzchołków o stopniu $> 7$ powierzchnia nie będzie posiadała ciągłości $C1$).
+
+W przypadku, gdy niezbędne jest zachowanie ciągłości $C^1$, lepiej zastosować jeszcze inną modyfikację, mianowicie zmodyfikować regułę dla wierzchołków sąsiadujących z wierzchołkami szczególnymi.  Dla wierzchołków o stopniu $<7$ nie trzeba wprowadzać modyfikacji, zaś dla pozostałych należy zastosować regułę zaprezentowaną na Rysunku ~\ref{fig:ModifiedLoop}. Otrzymana powierzchnia będzie posiadać ciągłość $C^1$ na krawędzi.
+\begin{figure}[h!] 
+\begin{center} 
+\includegraphics[width=4in]{Clipboard3_03} 
+\caption{\small \sl Zmodyfikowana reguła dla wierzchołków sąsiadujących z wierzchołkami szczególnymi leżącymi na załamaniu lub krawędzi (schemat subdivision Loop'a).}
+\label{fig:ModifiedLoop} 
+\end{center} 
+\end{figure}
+
+\subsection*{Końcowa pozycja punktów}
+Dla ustalonego wierzchołka w schemacie Loop'a łatwo obliczyć jego pozycję w końcowej płaszczyźnie, czyli granicę $\lim_{j \to \infty}p^j$ dla ustalonego wierzchołka.
+Dla wierzchołków regularnych należy jedynie zamienić w regule obliczającej pozycję wierzchołku w kolejnym kroku $\beta$ na $\chi =\frac{1}{3/8\beta+n}$.
+
+Dla wierzchołków szczególnych reguła wygląda następująco:
+\begin{equation}
+p_0=\frac{1}{5} p_{0,1} + \frac{3}{5} p_0 + \frac{1}{5} p_{1,k-i} 
+\end{equation} %zamienić na p_0^\infty
+
+\section{Zmodyfikowany Schemat Butterfly}
+Schemat Butterfly został opisany przez Dyn'a, Gregory'ego i Levin'a \cite{Dyn}.
+Oryginalny schemat Butterfly operuje na ustalonych siatkach trójkątów. Powierzchnia końcowa charakteryzuje się ciągłością $C^1$, jednakże nie ma jej przy szczególnych wierzchołkach o stopniu $k=3$ oraz $k>7$ \cite{Zorin}.
+
+Schemat ten nie generuje odcinkowo wielomianowych powierzchni. W modyfikacji Butterfly \cite{ZorinSchroeder} zaproponowany schemat generuje powierzchnie o ciągłości $C^1$ dla ustalonych siatek wielokątów (dowód przedstawiono w \cite{Zorin}). Rysunek ~\ref{fig:ModifiedButterfly} przedstawia ten schemat.
+\begin{figure}[h!] 
+\begin{center} 
+\includegraphics[width=5in]{Clipboard3_04} 
+\caption{\small \sl Zmodyfikowany schemat Butterfly. Po lewej schemat dla nieparzystych wierzchołków: po lewej na górze schemat dla wierzchołków sąsiadujących z regularnymi wierzchołkami, po lewej na dole schemat dla wierzchołków z załamań i granic, po prawej natomiast schemat dla wierzchołków sąsiadujących z wierzchołkami szczególnymi. 
+Współczynniki $s_i$ to $\frac{1}{k}(\frac{1}{4}+cos\frac{2i\pi}{k}+\frac{1}{2}cos\frac{4i\pi}{k})$ dla $k>5$. Dla $k=3$,$s_0=\frac{5}{12}$, $s_{1,2}=-\frac{1}{12}$; dla $k=4$, $s_0=-\frac{1}{8}$, $s_{1,3}=0$ .}
+\label{fig:ModifiedButterfly} 
+\end{center} 
+\end{figure}
+Jest to schemat interpolujący, nie są zatem potrzebne reguły obliczające pozycje wierzchołków na końcowej powierzchni. 
+
+Aby zachować ciągłość na granicach, należy użyć specjalnych współczynników, podobnie jak w przypadku schematu Loop'a. Można również zastosować proste rozwiązanie, mianowicie otrzymać brakujące wierzchołki poprzez odbicie, w każdym przypadku, gdy siatka schematu Butterfly jest niekompletna i za każdym razem używać standardowej reguły Butterfly, gdy wierzchołek nie sąsiaduje z wierzchołkami szczególnymi.
+
+\section{Schemat Catmull'a-Clark'a}
+Schemat ten został opisany w \cite{CatmullClark}. Rysunek ~\ref{fig:CatmullClark} prezentuje schemat Catmull'a-Clark'a. Powierzchnia końcowa otrzymywana za pomocą tego schematu charakteryzuje się ciągłością $C^2$ wszędzie poza szczególnymi wierzchołkami, gdzie posiada ciągłość $C^1$. 
+\begin{figure}[h!] 
+\begin{center} 
+\includegraphics[width=5in]{Clipboard3_05} 
+\caption{\small \sl Schemat subdivision Catmull'a-Clark'a. Po lewej schemat dla nieparzystych wierzchołków, po prawej dla parzystych. Od góry po lewej: schemat dla wierzchołków powstałych ze ścian, schemat dla wierzchołków powstałych z krawędzi oraz schemat dla wierzchołków na krawędziach. Po prawej na górze: schemat dla wierzchołków wewnętrznych, po prawej na dole: schemat dla wierzchołków na załamaniach i krawędziach. Dla wierzchołków szczególnych Catmull i Clark \cite{CatmullClark} zaproponowali współczynniki $\beta=\frac{3}{2k}$ i $\gamma=\frac{1}{4k}$.}
+\label{fig:CatmullClark} 
+\end{center} 
+\end{figure}
+
+Rysunek ~\ref{fig:CatmullClarkRange} pokazuje zakres, z jakiego można wybrać wartości $\alpha$ oraz $\beta$.
+\begin{figure}[h!] 
+\begin{center} 
+\includegraphics[width=4in]{Clipboard3_07} 
+\caption{\small \sl Zakresy, spośród których mogą być wybrane współczynniki $\alpha$ oraz $\beta$ w schemacie subdivision Catmull'a-Clark'a. $\alpha=1-\gamma-\beta$ to współczynnik centralnego wierzchołka.}
+\label{fig:CatmullClarkRange} 
+\end{center} 
+\end{figure}
+
+Dla wierzchołków na granicach zaproponowana jest specjalna reguła, aby powierzchnia końcowa miała ciągłość $C^1$. Rysunek ~\ref{fig:CatmullClarkBoundary} pokazuje tę regułę. Lepszym, choć nieco bardziej skomplikowanym wyborem współczynników jest: $\frac{3}{8}+\frac{1}{4}cos\frac{2\pi}{k-1}$ zamiast $\frac{5}{8}$ i $\frac{3}{8}-\frac{1}{4}cos\frac{2\pi}{k-1}$ zamiast $\frac{1}{8}$.
+\begin{figure}[h!] 
+\begin{center} 
+\includegraphics[width=1in]{Clipboard3_06} 
+\caption{\small \sl Zmodyfikowana reguła subdivision Catmull'a-Clark'a dla wierzchołków szczególnych sąsiadujących z wierzchołkami na krawędzi powierzchni.}
+\label{fig:CatmullClarkBoundary} 
+\end{center} 
+\end{figure}
+
+Schemat Catmull'a-Clark'a został zdefiniowany dla siatek czworokątów. Jednak ustalone siatki dowolnych wielokątów mogą zostać przekształcone w siatki czworokątów przy użyciu bardziej ogólnej postaci reguł schematu Catmull'a-Clark'a \cite{CatmullClark}:
+\begin{itemize}
+\item punkty kontrolne powstałe ze ścian dla $n$-kąta są średnią z położeń rogów wielokąta;
+\item punkty kontrolne powstałe z krawędzi są średnią z położeń końców tej krawędzi oraz nowo wstawianych punktów kontrolnych powstałych ze ścian, dla sąsiadujących ścian;
+\item formuła dla parzystych punktów kontrolnych może mieć różne postacie. Oryginalna jej wersja to:
+\begin{equation}
+p_0^{j+1}=\frac{k-2}{k}p_0^j+\frac{1}{k^2}\sum_{i=1}^{k-1}p_{i,1}^j+\frac{1}{k^2}\sum_{i=0}^{k-1}p_{i,2}^{j+1}
+\end{equation}
+\end{itemize}
+
+\section{Schemat Kobbelta}
+Schemat Kobbelta to schemat interpolujący o ciągłości $C^1$ dla wierzchołków wewnętrznych dowolnego stopnia, zaproponowany przez Kobbelta \cite{Kobbelt}. 
+\begin{figure}[h!] 
+\begin{center} 
+\includegraphics[width=5in]{Clipboard3_08} 
+\caption{\small \sl Schemat Kobbelta. Po lewej schemat dla regularnych wierzchołków, po lewej na górze: schemat dla wierzchołków powstałych ze ścian, po lewej na dole: schemat dla wierzchołków powstałych z krawędzi, wierzchołków leżących na załamaniach oraz krawędziach, po prawej obliczanie wierzchołka powstałego ze ściany, sąsiadującego z wierzchołkiem szczególnym.}
+\label{fig:Kobbelt} 
+\end{center} 
+\end{figure}
 
 %
-% Załączniki:
+% Załączniki (opcjonalnie):
 \appendix
 \chapter{Tytuł załącznika jeden}
-
-Treść załącznika jeden.\index{jeden}.
+Treść załącznika jeden. jeden\index{żółw}\index{źdźbło}\index{zebra}.
 
 \chapter{Tytuł załącznika dwa}
-
-Treść załącznika dwa. 
-\index{dwa}.
+Treść załącznika dwa\index{system XML}.
 
 %\include bib.tex
-\bibliography{sample}
-
-%
-% Spis tabel:
+\bibliography {Praca_Magisterska}
+% Spis tabel (jeżeli jest potrzebny):
 \listoftables
-%
-% Spis rysunków:
+% Spis rysunków (jeżeli jest potrzebny):
 \listoffigures
-
-%
-% Skorowidz
+% Skorowidz (opcjonalnie)
 \printindex
 
 \end{document}
